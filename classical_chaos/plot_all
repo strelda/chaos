@@ -1,0 +1,3 @@
+gnuplot -e "name='standard_map.csv'" -e "image_name='standard_map.png'" standard_map.gp &&
+gnuplot -e "name='standard_map_wiglywogly.csv'" -e "image_name='standard_map_wiglywogly.png'" standard_map.gp &&
+gnuplot -e "name='deviation_vector.csv'" -e "image_name='deviation_vector.png'" deviation_vector.gp
