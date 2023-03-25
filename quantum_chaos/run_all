@@ -1,0 +1,3 @@
+cargo run &&
+gnuplot plots/well_energies.gnuplot &&
+gnuplot plots/well_energy_differences.gnuplot
