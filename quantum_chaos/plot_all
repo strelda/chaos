@@ -1,3 +1,2 @@
-cargo run &&
 gnuplot plots/well_energies.gnuplot &&
 gnuplot plots/ps.gnuplot
