@@ -1,2 +1,4 @@
-gnuplot plots/well_energies.gnuplot &&
-gnuplot plots/ps.gnuplot
+gnuplot plots/2d/well_energies.gnuplot &&
+gnuplot plots/2d/ps.gnuplot &&
+gnuplot plots/3d/well_energies.gnuplot &&
+gnuplot plots/3d/ps.gnuplot

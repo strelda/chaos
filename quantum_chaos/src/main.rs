@@ -1,71 +1,57 @@
 mod module;
 use std::f64::consts::PI;
-use std::io::Write;
-use module::{well_energy};
+use std::f64::consts::E;
+use module::{*};
 
-fn calculate_well_energies(a: f64, b: f64, emax: f64) -> Result<(), std::io::Error> {
-    let mut n1: i64 = 1;
-    let mut n2: i64 = 1;
-    let mut energy: f64 = 0.;
-    let mut file = std::fs::File::create("generated_data/well_energies.txt")?;
 
-    while energy < emax {
-        energy = 0.0;
-        while energy < emax {
-            energy = well_energy(n1, n2, a, b);
-            writeln!(file, "{}", energy)?;
-            n2 += 1;
-        }
-        n2 = 1;
-        n1 += 1;
-    }
-    Ok(())
+/// Calculate the 2D well energies and energy differences
+/// ## Arguments:
+/// * `a` - The length of the first side of the well
+/// * `b` - The length of the second side of the well
+/// * `emax` - The maximum energy to calculate
+/// * `filename` - The name of the file to write the energies to
+/// ## Example:
+/// `run_2d((PI / 3.0).sqrt() , 1.0, 1e6, "generated_data/2d/energies.txt", "generated_data/2d/endif.txt");`
+fn run_2d(a: f64, b: f64, emax: f64, filename_ene: &str, filename_dif: &str) {
+   let well2d = Well::new(vec![a,b]);
+
+   match well2d.calculate_energies(emax, filename_ene) {
+      Ok(()) => println!("Energies for 2D well calculated successfully."),
+      Err(e) => eprintln!("Error occurred in well2d.calculate_energies(): {}", e),
+   }
+   match well2d.calculate_energy_differences(emax, filename_dif) {
+      Ok(()) => println!("Energy differences for 2D well calculated successfully."),
+      Err(e) => eprintln!("Error occurred in well2d.calculate_energy_differences(): {}", e),
+   }
 }
 
-fn calculate_well_energy_differences(a: f64, b: f64, emax: f64) -> Result<(), std::io::Error> {
-    let mut n1: i64 = 1;
-    let mut n2: i64 = 1;
-    let mut energy1: f64 = 0.;
-    let mut energy2: f64 = 0.;
-    let mut file = std::fs::File::create("generated_data/ps.txt")?;
+/// Calculate the 3D well energies and energy differences
+/// ## Arguments:
+/// * `a` - The length of the first side of the well
+/// * `b` - The length of the second side of the well
+/// * `c` - The length of the third side of the well
+/// * `emax` - The maximum energy to calculate
+/// * `filename_ene` - The name of the file to write the energies to
+/// * `filename_dif` - The name of the file to write the energy differences to
+/// ## Example:
+/// `run_3d(1.0, (PI / 3.0).sqrt() , (E.powi(3)/21.0).sqrt(), 1e6, "generated_data/2d/energies.txt", "generated_data/2d/endif");`
+fn run_3d(a: f64, b: f64, c: f64, emax: f64, filename_ene: &str, filename_dif: &str) {
+   let well3d = Well::new(vec![a,b,c]);
 
-    while energy1 < emax {
-        energy1 = well_energy(n1, n1, a, b);
-        n2 = n1;
-        energy2 = 0.;
-        while energy2 < emax {
-            energy2 = well_energy(n1, n2 + 1, a, b);
-            let s: f64 = energy2 - energy1;
-
-            writeln!(file, "{}", s)?;
-            n2 += 1;
-            energy1 = energy2;
-        }
-        n1 += 1;
-    }
-    Ok(())
+   match well3d.calculate_energies(emax, filename_ene) {
+      Ok(()) => println!("Energies for 3D well calculated successfully."),
+      Err(e) => eprintln!("Error occurred in well3d.calculate_energies(): {}", e),
+   }
+   match well3d.calculate_energy_differences(emax, filename_dif) {
+      Ok(()) => println!("Energy differences for 3D well calculated successfully."),
+      Err(e) => eprintln!("Error occurred in well3d.calculate_energy_differences(): {}", e),
+   }
 }
-
-
-
 
 fn main() {
-    // set well parameters
-    let a: f64 = (PI / 3.0).sqrt();
-    let b: f64 = 1.0;
-    // set the criteria for the energy histogram
-    let emax: f64 = 1e6;
+ 
+    run_2d((PI / 3.0).sqrt() , 1.0, 1e6, "generated_data/2d/energies.txt", "generated_data/2d/endif.txt");
 
-    // generate the energy histogram data
-    match calculate_well_energies(a, b, emax) {
-        Ok(()) => println!("Energies calculated successfully."),
-        Err(e) => eprintln!("Error occurred: {}", e),
-    }
+    run_3d(1.0, (PI / 3.0).sqrt() , (E.powi(3)/21.0).sqrt(), 1e5, "generated_data/3d/energies.txt", "generated_data/3d/endif.txt");
 
-    // generate the energy differences data
-    match calculate_well_energy_differences(a, b, emax) {
-        Ok(()) => println!("Energy differences calculated successfully."),
-        Err(e) => eprintln!("Error occurred: {}", e),
-    }
-    
 }
